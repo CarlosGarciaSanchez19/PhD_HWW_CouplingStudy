@@ -3,16 +3,18 @@ import sys
 import os
 import ROOT
 
-src  = os.path.realpath("rootFiles__2016HIPM_v9/mkShapes__2016HIPM_v9_DYVBF_MoMEMta.root")
+src  = os.path.realpath("rootFiles__2016HIPM_v9/mkShapes__2016HIPM_v9_ggHvsVBF_MoMEMta.root")
 
 normalise = True
 
-Low = "L"
+method = "MoMEMta"
+Low = ""
 cat  = "hww2l2v_13TeV_of2j_vbf" + Low
-var  = "D_VBF"
-folder = "MoMEMta/"
+var  = "D_ggHvsHVBF"
+folder = method + "/"
 var_unity = ""
 prod = "qqH_hww"
+prod2 = "ggH_hww"
 bkg = "WW"
 
 ########
@@ -20,7 +22,7 @@ bkg = "WW"
 f = ROOT.TFile.Open(''+src+'', 'read')
 hstr = ''+cat+'/'+var+'/histo_'+prod
 h1 = f.Get(""+hstr+"")
-h2 = f.Get(hstr.replace('qqH', 'ggH'))
+h2 = f.Get(hstr.replace('qqH_hww', prod2))
 hstr = ''+cat+'/'+var+'/histo_'+bkg
 hbkg = f.Get(""+hstr+"")
 h1.SetDirectory(0)
@@ -47,10 +49,10 @@ h2.SetFillStyle(0)
 
 #h1.GetXaxis().SetRangeUser(xmin, xmax)
 if (Low == "L"):
-    h1.SetTitle(r"D_{ZJJ vs HJJ}"+" including low-energy jets"+" (simulated, MoMEMta output)")
+    h1.SetTitle(r"D_{ggH vs HVBF}"+" including low-energy jets"+" (simulated, "+method+" output)")
 else:
-    h1.SetTitle(r"D_{ZJJ vs HJJ}"+" (simulated, MoMEMta output)")
-h1.GetXaxis().SetTitle(r"D_{ZJJ vs HJJ}"+" "+var_unity)
+    h1.SetTitle(r"D_{ggH vs HVBF}"+" (simulated, "+method+" output)")
+h1.GetXaxis().SetTitle(r"D_{ggH vs HVBF}"+" "+var_unity)
 #h1.GetYaxis().SetTitle('Events')
 if (normalise):
     h1.Scale(1/h1.Integral())
@@ -74,8 +76,8 @@ hbkg.Draw("same") """
 h1.Draw("HIST")
 h2.Draw("same HIST")
 hbkg.Draw("same HIST")
-h1.GetYaxis().SetRangeUser(.0, .6) # only if needed
-legend = ROOT.TLegend(0.65, 0.65, 0.85, 0.85)
+h1.GetYaxis().SetRangeUser(.0, .8) # only if needed
+legend = ROOT.TLegend(0.60, 0.65, 0.85, 0.85)
 legend.SetBorderSize(0)
 legend.SetTextSize(0.035)
 legend.SetFillStyle(0)
@@ -84,5 +86,5 @@ legend.AddEntry(h2, 'ggH', "l")
 legend.AddEntry(hbkg, bkg+"_bkg", "l")
 legend.Draw("same")
 
-canvas.SaveAs("plots/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_MoMEMta_Sergios.pdf")
-canvas.SaveAs("plots/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_MoMEMta_Sergios.png")
+canvas.SaveAs("plots/pdfs/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_"+method+".pdf")
+canvas.SaveAs("plots/pngs/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_"+method+".png")
