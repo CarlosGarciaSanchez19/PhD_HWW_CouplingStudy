@@ -4,7 +4,7 @@ import sys
 import os
 import ROOT
 
-src  = os.path.realpath("rootFiles__2016HIPM_v9/mkShapes__2016HIPM_v9_DY_MoMEMta.root")
+src  = os.path.realpath("rootFiles__2016HIPM_v9/mkShapes__2016HIPM_v9_ggHvsVBF_MoMEMta_jets_TFs.root")
 
 normalise = True
 plot = False
@@ -12,11 +12,11 @@ plot = False
 method = "MoMEMta"
 Low = ""
 cat  = "hww2l2v_13TeV_of2j_vbf" + Low
-var  = "D_ZDYvsHVBF"
+var  = "D_ggHvsHVBF"
 folder = method + "/"
 var_unity = ""
 prod = "qqH_hww"
-prod2 = "dyzjj"
+prod2 = "ggH_hww"
 bkg = "WW"
 
 ########
@@ -31,6 +31,10 @@ h1.SetDirectory(0)
 h2.SetDirectory(0)
 hbkg.SetDirectory(0)
 f.Close()
+
+print("Greater than 0.8 window qqH events for "+method+" (with jets TFs):", h1.Integral(8, 10))
+print("Greater than 0.8 window WW events for "+method+" (with jets TFs):", hbkg.Integral(8, 10))
+print("Significance for "+method+":", h1.Integral(8, 10) / sqrt(hbkg.Integral(8, 10)))
 
 if plot:
     canvas = ROOT.TCanvas('canvas', '', 700, 500)
@@ -78,9 +82,9 @@ if plot:
     h1.Draw("HIST")
     h2.Draw("same HIST")
     hbkg.Draw("same HIST")
-    h1.GetYaxis().SetRangeUser(.0, .6) # only if needed
-    h1.GetXaxis().SetRangeUser(0.8, 1.) # only if needed
-    legend = ROOT.TLegend(0.15, 0.65, 0.85, 0.85)
+    h1.GetYaxis().SetRangeUser(.0, .8) # only if needed
+    h1.GetXaxis().SetRangeUser(0., 1.) # only if needed
+    legend = ROOT.TLegend(0.65, 0.65, 0.85, 0.85)
     legend.SetBorderSize(0)
     legend.SetTextSize(0.035)
     legend.SetFillStyle(0)
@@ -88,9 +92,6 @@ if plot:
     legend.AddEntry(h2, 'ggH', "l")
     legend.AddEntry(hbkg, bkg+"_bkg", "l")
     legend.Draw("same")
-    canvas.SaveAs("plots/pdfs/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_"+method+"_greater_than_point8_window.pdf")
-    canvas.SaveAs("plots/pngs/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_"+method+"_greater_than_point8_window.png")
+    canvas.SaveAs("plots/pdfs/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_"+method+"_with_jets_TFs.pdf")
+    canvas.SaveAs("plots/pngs/"+folder+cat+"_"+var+"_"+prod+"_with_"+bkg+"bkg_"+method+"_with_jets_TFs.png")
 
-print("Greater than 0.8 window qqH events for "+method+":", h1.Integral(8, 10))
-print("Greater than 0.8 window WW events for "+method+":", hbkg.Integral(8, 10))
-print("Significance for "+method+":", h1.Integral(8, 10)/sqrt(hbkg.Integral(8, 10)))
