@@ -10,11 +10,27 @@ parameters = {
     energy = 13000.,
 }
 
+--[[ GaussianTransferFunctionOnEnergy.tf_jet1 = {
+  ps_point = add_dimension(), -- A transfer function integrates over a variable (the particle's energy), so we need a new dimension in the integrated volume
+  reco_particle = jet1.reco_p4, -- Pass the input tag corresponding to the experimentally reconstructed 4-vector of the particle, given to 'computeWeights()'
+  sigma = 0.05, -- Take 5% resolution on the energy
+}
+
+GaussianTransferFunctionOnEnergy.tf_jet2 = {
+  ps_point = add_dimension(), -- A transfer function integrates over a variable (the particle's energy), so we need a new dimension in the integrated volume
+  reco_particle = jet2.reco_p4, -- Pass the input tag corresponding to the experimentally reconstructed 4-vector of the particle, given to 'computeWeights()'
+  sigma = 0.05, -- Take 5% resolution on the energy
+}
+ ]]
+-- Set the gen p4 of the input to be the output of the transfer function
+--[[ jet1.set_gen_p4("tf_jet1::output")
+jet2.set_gen_p4("tf_jet2::output") ]]
+
 inputs = {
-    Z.reco_p4,
+    higgs.reco_p4,
     jet1.reco_p4,
     jet2.reco_p4,
-    }
+}
 
 -- Build the partonic initial state
 BuildInitialState.boost = {
